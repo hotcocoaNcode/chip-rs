@@ -1,14 +1,14 @@
 mod byteutil;
 mod disassemble;
 mod fileutil;
+mod emu;
 
 fn print_help() {
     println!("CHIP-RS");
-    println!("A fun project to learn Rust with by @hotcocoaNcode");
-    println!("\nFLAGS");
-    println!("chip-rs --help\nShow help menu\n");
-    println!("chip-rs -d <file>\nDisassemble a CHIP-8 Program\n");
-    println!("chip-rs <file>\nchip-rs -r <file>\nExecute a CHIP-8 Program\n");
+    println!("A fun project to learn Rust by @hotcocoaNcode\n");
+    println!("chip-rs --help\n- Show help menu\n");
+    println!("chip-rs -d <file>\n- Disassemble a CHIP-8 Program\n");
+    println!("chip-rs <file>\nchip-rs -r <file>\n- Execute a CHIP-8 Program\n");
 }
 
 fn main() {

@@ -1,7 +1,10 @@
 use crate::byteutil;
 
-fn print_opcode(index: usize, first: u8, second: u8) {
-    print!("{:04X} | ", index);
+fn print_opcode(index: usize, first: u8, second: u8, first_jmp: u16) {
+    print!("{:04X} | {:02X} {:02X} | ", index + 0x200, first, second);
+    if index != 0 && first_jmp as usize > index {
+        print!("\x1b[0;37mnop ; JMP skips this. Possible instruction: ");
+    }
     match first {
         0x00 => {
             match second {
@@ -169,16 +172,20 @@ fn print_opcode(index: usize, first: u8, second: u8) {
             }
         }
 
-        _ => {
+        _ => { // We should never reach this, because we cover the ranges from 00-FF
             print!("nop ; unknown bytes {:02X} {:02X}", first, second)
         }
     }
-    print!("\n");
+    print!("\x1b[0m\n");
 }
 
 pub fn print_disassembly(bytes: Vec<u8>) {
-    println!("BYTE | INSTRUCTION\n__________________");
+    println!("IDX  | BYTES | INSTRUCTION\n__________________________");
+    let mut first_jmp: u16 = 0;
+    if byteutil::get_high_nyb(bytes[0]) == 0x1 {
+        first_jmp = byteutil::get_3nyb_addr(bytes[0], bytes[1]);
+    }
     for i  in (0..bytes.len()-1).step_by(2) {
-        print_opcode(i+0x200, bytes[i], bytes[i+1]);
+        print_opcode(i, bytes[i], bytes[i+1], first_jmp.clone());
     }
 }
